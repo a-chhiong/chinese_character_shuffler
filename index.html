@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>夏綠蒂認字連連看</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #a5b4fc;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      border: 4px solid #4f46e5;
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+      position: relative;
+    }
+    .title {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .inputs input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+    }
+    .color-1 { border: 2px solid orange; }
+    .color-2 { border: 2px solid yellow; }
+    .color-3 { border: 2px solid deepskyblue; }
+    .color-4 { border: 2px solid green; }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .buttons button {
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+    }
+
+    .grid {
+      position: relative;
+      border: 2px solid black;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1 / 1;
+      background: white;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .char {
+      width: 40px;
+      height: 40px;
+      border: 2px solid black;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="content">
+    <div class="title">夏綠蒂認字連連看</div>
+    <div class="inputs">
+      <input class="color-1" type="text" maxlength="7" placeholder="春眠不覺曉" id="input1">
+      <input class="color-2" type="text" maxlength="7" placeholder="處處聞啼鳥" id="input2">
+      <input class="color-3" type="text" maxlength="7" placeholder="夜來風雨聲" id="input3">
+      <input class="color-4" type="text" maxlength="7" placeholder="花落知多少" id="input4">
+    </div>
+    <div class="buttons">
+      <button onclick="fillWithTangPoems()">Random Tang</button>
+      <button onclick="shuffleChars()">Shuffle</button>
+      <button onclick="printPage()">Print</button>
+    </div>
+    <div class="grid" id="charGrid"></div>
+  </div>
+
+  <script>
+    const tangPhrases = [
+      "白日依山盡", "黃河入海流", "春風又綠江南岸", "明月何時照我還",
+      "獨在異鄉為異客", "每逢佳節倍思親", "無邊落木蕭蕭下", "不盡長江滾滾來",
+      "海內存知己", "天涯若比鄰", "床前明月光", "疑是地上霜",
+      "舉頭望明月", "低頭思故鄉", "千山鳥飛絕", "萬徑人蹤滅"
+    ];
+
+    function fillWithTangPoems() {
+      const shuffled = tangPhrases.sort(() => Math.random() - 0.5).slice(0, 4);
+      document.getElementById('input1').value = shuffled[0];
+      document.getElementById('input2').value = shuffled[1];
+      document.getElementById('input3').value = shuffled[2];
+      document.getElementById('input4').value = shuffled[3];
+    }
+
+    function shuffleChars() {
+      const inputs = [
+        document.getElementById('input1').value,
+        document.getElementById('input2').value,
+        document.getElementById('input3').value,
+        document.getElementById('input4').value
+      ];
+
+      let allChars = inputs.join('').split('');
+      allChars = allChars.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('charGrid');
+      grid.innerHTML = '';
+      const gridWidth = grid.clientWidth;
+      const gridHeight = grid.clientHeight;
+      const placed = [];
+      const size = 40;
+      const spacing = 4;
+
+      allChars.forEach(char => {
+        let x, y, tries = 0;
+        let overlap;
+
+        do {
+          overlap = false;
+          x = Math.random() * (gridWidth - size);
+          y = Math.random() * (gridHeight - size);
+          for (const pos of placed) {
+            const dx = pos.x - x;
+            const dy = pos.y - y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < size + spacing) {
+              overlap = true;
+              break;
+            }
+          }
+          tries++;
+        } while (overlap && tries < 200);
+
+        if (tries < 200) {
+          const span = document.createElement('div');
+          span.className = 'char';
+          span.textContent = char;
+          span.style.left = `${x}px`;
+          span.style.top = `${y}px`;
+          grid.appendChild(span);
+          placed.push({ x, y });
+        }
+      });
+    }
+
+    function printPage() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
