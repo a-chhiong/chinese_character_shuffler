@@ -122,6 +122,7 @@
       <input class="color-4" type="text" maxlength="7" placeholder="花落知多少" id="input4">
     </div>
     <div class="buttons">
+      <button onclick="fillWithSanziPoems()">三字經</button>
       <button onclick="fillWithTangPoems()">唐詩三百首</button>
       <button onclick="shuffleChars()">洗牌</button>
       <button onclick="printPage()">列印</button>
@@ -132,6 +133,7 @@
   <script>
 
     let tangPhrases = '';
+    let sanziPhrases = '';
 
     window.addEventListener('DOMContentLoaded', () => {
       fetch('https://raw.githubusercontent.com/chinese-poetry/chinese-poetry/master/%E5%85%A8%E5%94%90%E8%AF%97/%E5%94%90%E8%AF%97%E4%B8%89%E7%99%BE%E9%A6%96.json')
@@ -145,6 +147,19 @@
         })
         .catch(error => {
           console.error('Error loading 唐詩三百首:', error);
+        });
+
+      fetch('https://raw.githubusercontent.com/chinese-poetry/chinese-poetry/refs/heads/master/%E8%92%99%E5%AD%A6/sanzijing-new.json')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch poem data');
+          return response.json();
+        })
+        .then(data => {
+          sanziPhrases = data;
+          console.log(`Loaded 三字經`);
+        })
+        .catch(error => {
+          console.error('Error loading 三字經:', error);
         });
     });
 
@@ -183,6 +198,15 @@
     function fillWithTangPoems() {
       const selectedEntry = tangPhrases[Math.floor(Math.random() * tangPhrases.length)];
       const uniquePhrases = pickUniquePhrasesFromParagraphs(selectedEntry.paragraphs);
+    
+      document.getElementById('input1').value = uniquePhrases[0];
+      document.getElementById('input2').value = uniquePhrases[1];
+      document.getElementById('input3').value = uniquePhrases[2];
+      document.getElementById('input4').value = uniquePhrases[3];
+    }
+
+    function fillWithSanziPoems() {
+      const uniquePhrases = pickUniquePhrasesFromParagraphs(sanziPhrases.paragraphs);
     
       document.getElementById('input1').value = uniquePhrases[0];
       document.getElementById('input2').value = uniquePhrases[1];
