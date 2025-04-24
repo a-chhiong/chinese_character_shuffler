@@ -20,7 +20,7 @@
       background: white;
       border: 4px solid #4f46e5;
       padding: 1rem;
-      width: 100%;
+      width: 90%;
       max-width: 800px;
       max-height: 95vh;
       overflow: auto;
@@ -70,10 +70,10 @@
       border-radius: 8px;
     }
 
-    .grid {
+    .block {
       position: relative;
       border: 2px solid black;
-      width: 100%;
+      width: 90%;
       max-width: 500px;
       aspect-ratio: 1 / 1;
       background: white;
@@ -81,7 +81,7 @@
       margin: 0 auto;
     }
     @media (max-width: 480px) {
-      .grid {
+      .block {
         max-width: 90vw;
       }
     }
@@ -126,11 +126,11 @@
       <input class="color-4" type="text" maxlength="7" placeholder="花落知多少" id="input4">
     </div>
     <div class="buttons">
-      <button onclick="fillWithTangPoems()">Random Tang</button>
-      <button onclick="shuffleChars()">Shuffle</button>
-      <button onclick="printPage()">Print</button>
+      <button onclick="fillWithTangPoems()">唐詩三百首</button>
+      <button onclick="shuffleChars()">洗牌</button>
+      <button onclick="printPage()">列印</button>
     </div>
-    <div class="grid" id="charGrid"></div>
+    <div class="block" id="charBlock"></div>
   </div>
 
   <script>
@@ -205,10 +205,11 @@
       let allChars = inputs.join('').split('');
       allChars = allChars.sort(() => Math.random() - 0.5);
 
-      const grid = document.getElementById('charGrid');
-      grid.innerHTML = '';
-      const gridWidth = grid.clientWidth;
-      const gridHeight = grid.clientHeight;
+      const block = document.getElementById('charBlock');
+
+      block.innerHTML = '';
+      const gridWidth = block.clientWidth;
+      const gridHeight = block.clientHeight;
       const placed = [];
       const size = gridWidth * 0.1;
       const spacing = 4;
@@ -245,7 +246,7 @@
           span.style.left = `${xPercent}%`;
           span.style.top = `${yPercent}%`;
 
-          grid.appendChild(span);
+          block.appendChild(span);
           placed.push({ x, y });
         }
       });
